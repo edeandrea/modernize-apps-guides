@@ -1,118 +1,126 @@
 {
+  "v": "4.0",
   "name": "modernize-apps",
-  "defaultEnv": "default",
-  "environments": {
-    "default": {
-      "machines": {
-        "dev-machine": {
-          "attributes": {
-            "memoryLimitBytes": "2147483648"
-          },
-          "servers": {
-            "EAP72": {
-              "port": "8080",
-              "attributes": {},
-              "protocol": "http"
+  "workspace": {
+    "name": "modernize-apps",
+    "defaultEnv": "default",
+    "environments": {
+      "default": {
+        "machines": {
+          "dev-machine": {
+            "attributes": {
+              "memoryLimitBytes": "2147483648"
+            },
+            "servers": {
+              "EAP72": {
+                "port": "8080",
+                "attributes": {},
+                "protocol": "http"
+              }
+            },
+            "volumes": {},
+            "installers": [
+              "org.eclipse.che.exec",
+              "org.eclipse.che.terminal",
+              "org.eclipse.che.ws-agent",
+              "org.eclipse.che.ls.java"
+            ],
+            "env": {
+              "MAVEN_OPTS": "-Xmx2048m",
+              "JBOSS_HOME": "/home/jboss/jboss-eap-7.2"
             }
-          },
-          "volumes": {},
-          "installers": [
-            "org.eclipse.che.exec",
-            "org.eclipse.che.terminal",
-            "org.eclipse.che.ws-agent",
-            "org.eclipse.che.ls.java"
-          ],
-          "env": {
-            "MAVEN_OPTS": "-Xmx2048m",
-            "JBOSS_HOME": "/home/jboss/jboss-eap-7.2"
           }
+        },
+        "recipe": {
+          "type": "dockerimage",
+          "content": "docker.io/fasalzaman/modernize-apps-v1:latest",
+          "contentType": ""
         }
-      },
-      "recipe": {
-        "type": "dockerimage",
-        "content": "docker.io/fasalzaman/modernize-apps-v1:latest",
-        "contentType": ""
       }
-    }
+    },
+    "projects": [
+      {
+        "links": [],
+        "name": "modernize-apps",
+        "attributes": {},
+        "type": "blank",
+        "source": {
+          "location": "https://github.com/RedHat-Middleware-Workshops/modernize-apps-labs/archive/master.zip",
+          "type": "zip",
+          "parameters": {
+            "skipFirstLevel": "true"
+          }
+        },
+        "path": "/modernize-apps",
+        "description": "",
+        "problems": [],
+        "mixins": []
+      },
+      {
+        "links": [],
+        "name": "monolith",
+        "attributes": {},
+        "type": "maven",
+        "source": {
+          "parameters": {}
+        },
+        "path": "/modernize-apps/monolith",
+        "problems": [],
+        "mixins": []
+      },
+      {
+        "links": [],
+        "name": "inventory",
+        "attributes": {},
+        "type": "maven",
+        "source": {
+          "parameters": {}
+        },
+        "path": "/modernize-apps/inventory",
+        "problems": [],
+        "mixins": []
+      },
+      {
+        "links": [],
+        "name": "catalog",
+        "attributes": {},
+        "type": "maven",
+        "source": {
+          "parameters": {}
+        },
+        "path": "/modernize-apps/catalog",
+        "problems": [],
+        "mixins": []
+      },
+      {
+        "links": [],
+        "name": "cart",
+        "attributes": {},
+        "type": "maven",
+        "source": {
+          "parameters": {}
+        },
+        "path": "/modernize-apps/cart",
+        "problems": [],
+        "mixins": []
+      }
+    ],
+    "attributes": {},
+    "commands": [
+      {
+        "commandLine": "mvn wildfly:run -f ${current.project.path}/pom.xml",
+        "name": "Run Monolith Locally",
+        "attributes": {
+          "goal": "Run",
+          "previewUrl": "${server.EAP72}"
+        },
+        "type": "mvn"
+      }
+    ],
+    "links": []
   },
-  "projects": [
-    {
-      "links": [],
-      "name": "modernize-apps",
-      "attributes": {},
-      "type": "blank",
-      "source": {
-        "location": "https://github.com/RedHat-Middleware-Workshops/modernize-apps-labs/archive/master.zip",
-        "type": "zip",
-        "parameters": {
-          "skipFirstLevel": "true"
-        }
-      },
-      "path": "/modernize-apps",
-      "description": "",
-      "problems": [],
-      "mixins": []
-    },
-    {
-      "links": [],
-      "name": "monolith",
-      "attributes": {},
-      "type": "maven",
-      "source": {
-        "parameters": {}
-      },
-      "path": "/modernize-apps/monolith",
-      "problems": [],
-      "mixins": []
-    },
-    {
-      "links": [],
-      "name": "inventory",
-      "attributes": {},
-      "type": "maven",
-      "source": {
-        "parameters": {}
-      },
-      "path": "/modernize-apps/inventory",
-      "problems": [],
-      "mixins": []
-    },
-    {
-      "links": [],
-      "name": "catalog",
-      "attributes": {},
-      "type": "maven",
-      "source": {
-        "parameters": {}
-      },
-      "path": "/modernize-apps/catalog",
-      "problems": [],
-      "mixins": []
-    },
-    {
-      "links": [],
-      "name": "cart",
-      "attributes": {},
-      "type": "maven",
-      "source": {
-        "parameters": {}
-      },
-      "path": "/modernize-apps/cart",
-      "problems": [],
-      "mixins": []
-    }
-  ],
-  "attributes": {},
-  "commands": [
-    {
-      "commandLine": "mvn wildfly:run -f ${current.project.path}/pom.xml",
-      "name": "Run Monolith Locally",
-      "attributes": {
-        "goal": "Run",
-        "previewUrl": "${server.EAP72}"
-      },
-      "type": "mvn"
-    }
-  ],
-  "links": []
+  "creator": {
+    "name": "Eric Deandrea",
+    "email": "edeandrea@redhat.com"
+  }
 }
