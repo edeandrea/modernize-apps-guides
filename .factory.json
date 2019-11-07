@@ -1,4 +1,5 @@
 {
+  "name": "modernize-apps",
   "defaultEnv": "default",
   "environments": {
     "default": {
