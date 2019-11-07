@@ -14,11 +14,9 @@
             "servers": {
               "EAP72": {
                 "port": "8080",
-                "attributes": {},
                 "protocol": "http"
               }
             },
-            "volumes": {},
             "installers": [
               "org.eclipse.che.exec",
               "org.eclipse.che.terminal",
@@ -40,9 +38,7 @@
     },
     "projects": [
       {
-        "links": [],
         "name": "modernize-apps",
-        "attributes": {},
         "type": "blank",
         "source": {
           "location": "https://github.com/RedHat-Middleware-Workshops/modernize-apps-labs/archive/master.zip",
@@ -51,61 +47,29 @@
             "skipFirstLevel": "true"
           }
         },
-        "path": "/modernize-apps",
-        "description": "",
-        "problems": [],
-        "mixins": []
+        "path": "/modernize-apps"
       },
       {
-        "links": [],
         "name": "monolith",
-        "attributes": {},
         "type": "maven",
-        "source": {
-          "parameters": {}
-        },
-        "path": "/modernize-apps/monolith",
-        "problems": [],
-        "mixins": []
+        "path": "/modernize-apps/monolith"
       },
       {
-        "links": [],
         "name": "inventory",
-        "attributes": {},
         "type": "maven",
-        "source": {
-          "parameters": {}
-        },
-        "path": "/modernize-apps/inventory",
-        "problems": [],
-        "mixins": []
+        "path": "/modernize-apps/inventory"
       },
       {
-        "links": [],
         "name": "catalog",
-        "attributes": {},
         "type": "maven",
-        "source": {
-          "parameters": {}
-        },
-        "path": "/modernize-apps/catalog",
-        "problems": [],
-        "mixins": []
+        "path": "/modernize-apps/catalog"
       },
       {
-        "links": [],
         "name": "cart",
-        "attributes": {},
         "type": "maven",
-        "source": {
-          "parameters": {}
-        },
-        "path": "/modernize-apps/cart",
-        "problems": [],
-        "mixins": []
+        "path": "/modernize-apps/cart"
       }
     ],
-    "attributes": {},
     "commands": [
       {
         "commandLine": "mvn wildfly:run -f ${current.project.path}/pom.xml",
@@ -116,8 +80,7 @@
         },
         "type": "mvn"
       }
-    ],
-    "links": []
+    ]
   },
   "creator": {
     "name": "Eric Deandrea",
