@@ -12,8 +12,24 @@
               "memoryLimitBytes": "2147483648"
             },
             "servers": {
-              "EAP72": {
+              "MONOLITH": {
                 "port": "8080",
+                "protocol": "http"
+              },
+              "INVENTORY": {
+                "port": "8080",
+                "protocol": "http"
+              },
+              "CATALOG": {
+                "port": "8081",
+                "protocol": "http"
+              },
+              "CART-10080": {
+                "port": "10080",
+                "protocol": "http"
+              },
+              "CART-8082": {
+                "port": "8082",
                 "protocol": "http"
               }
             },
@@ -25,14 +41,17 @@
             ],
             "env": {
               "MAVEN_OPTS": "-Xmx2048m",
-              "JBOSS_HOME": "/home/jboss/jboss-eap-7.2"
+              "JBOSS_HOME": "/home/jboss/jboss-eap-7.2",
+              "MONOLITH_HOME": "/projects/modernize-apps/monolith",
+              "INVENTORY_HOME": "/projects/modernize-apps/inventory",
+              "CATALOG_HOME": "/projects/modernize-apps/catalog",
+              "CART_HOME": "/projects/modernize-apps/cart"
             }
           }
         },
         "recipe": {
           "type": "dockerimage",
-          "content": "docker.io/fasalzaman/modernize-apps-v1:latest",
-          "contentType": ""
+          "content": "docker.io/fasalzaman/modernize-apps-v1:latest2"
         }
       }
     },
@@ -72,11 +91,119 @@
     ],
     "commands": [
       {
-        "commandLine": "mvn wildfly:run -f ${current.project.path}/pom.xml",
+        "commandLine": "mvn wildfly:run -f ${MONOLITH_HOME}/pom.xml",
         "name": "Run Monolith Locally",
         "attributes": {
           "goal": "Run",
-          "previewUrl": "${server.EAP72}"
+          "previewUrl": "${server.MONOLITH}"
+        },
+        "type": "mvn"
+      },
+      {
+        "commandLine": "mvn clean package -f ${MONOLITH_HOME}/pom.xml",
+        "name": "Build Monolith",
+        "attributes": {
+          "goal": "Build"
+        },
+        "type": "mvn"
+      },
+      {
+        "commandLine": "mvn wildfly:start wildfly:add-resource wildfly:shutdown -f ${MONOLITH_HOME}/pom.xml",
+        "name": "Configure JBoss EAP Resources",
+        "attributes": {
+          "goal": "Common"
+        },
+        "type": "mvn"
+      },
+      {
+        "commandLine": "mvn clean -f ${MONOLITH_HOME}/pom.xml && ${HOME}/rhamt-cli-4.0.0.Beta4/bin/rhamt-cli --sourceMode --input ${MONOLITH_HOME} --output /projects/rhamt-reports/monolith --overwrite --source weblogic --target eap:7 --packages com.redhat weblogic",
+        "name": "Run Red Hat Application Migration Toolkit",
+        "attributes": {
+          "goal": "Run"
+        },
+        "type": "custom"
+      },
+      {
+        "commandLine": "mvn clean package -Popenshift -f ${MONOLITH_HOME}/pom.xml",
+        "name": "Prepare Monolith for OpenShift",
+        "attributes": {
+          "goal": "Build"
+        },
+        "type": "mvn"
+      },
+      {
+        "commandLine": "mvn clean package -f ${INVENTORY_HOME}/pom.xml",
+        "name": "Build Inventory",
+        "attributes": {
+          "goal": "Build"
+        },
+        "type": "mvn"
+      },
+      {
+        "commandLine": "mvn wildfly-swarm:run -f ${INVENTORY_HOME}/pom.xml",
+        "name": "Run Inventory Locally",
+        "attributes": {
+          "goal": "Run",
+          "previewUrl": "${server.INVENTORY}"
+        },
+        "type": "mvn"
+      },
+      {
+        "commandLine": "mvn clean fabric8:deploy -Popenshift -f ${INVENTORY_HOME}/pom.xml",
+        "name": "Deploy Inventory to OpenShift",
+        "attributes": {
+          "goal": "Deploy"
+        },
+        "type": "mvn"
+      },
+      {
+        "commandLine": "mvn spring-boot:run -f ${CATALOG_HOME}/pom.xml",
+        "name": "Run Catalog Locally",
+        "attributes": {
+          "goal": "Run",
+          "previewUrl": "${server.CATALOG}"
+        },
+        "type": "mvn"
+      },
+      {
+        "commandLine": "mvn clean package -f ${CATALOG_HOME}/pom.xml",
+        "name": "Build Catalog",
+        "attributes": {
+          "goal": "Build"
+        },
+        "type": "mvn"
+      },
+      {
+        "commandLine": "mvn clean fabric8:deploy -Popenshift -f ${CATALOG_HOME}/pom.xml",
+        "name": "Deploy Catalog to OpenShift",
+        "attributes": {
+          "goal": "Deploy"
+        },
+        "type": "mvn"
+      },
+      {
+        "commandLine": "mvn compile vertx:run -f ${CART_HOME}/pom.xml",
+        "name": "Run Cart Locally (10080)",
+        "attributes": {
+          "goal": "Run",
+          "previewUrl": "${server.CART-10080}"
+        },
+        "type": "mvn"
+      },
+      {
+        "commandLine": "mvn compile vertx:run -f ${CART_HOME}/pom.xml",
+        "name": "Run Cart Locally (8082)",
+        "attributes": {
+          "goal": "Run",
+          "previewUrl": "${server.CART-8082}"
+        },
+        "type": "mvn"
+      },
+      {
+        "commandLine": "mvn clean fabric8:deploy -Popenshift -f ${CART_HOME}/pom.xml",
+        "name": "Deploy Cart to OpenShift",
+        "attributes": {
+          "goal": "Deploy"
         },
         "type": "mvn"
       }
